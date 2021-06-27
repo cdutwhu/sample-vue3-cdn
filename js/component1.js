@@ -1,4 +1,5 @@
 import { getEmitter } from './mitt.js'
+import { fetch_get } from './fetch.js'
 
 let emitter = getEmitter();
 
@@ -21,9 +22,21 @@ export default {
         // fire an event
         // emitter.emit('foo', { a: 'b' })
 
-        function fire() {            
-            emitter.emit('from_app', mypen.value)
-            console.log(mypen.value);
+        function fire() {
+
+            let data = fetch_get('https://yesno.wtf/api');
+            
+            const fetchValue = async () => {
+                const a = await data;
+                emitter.emit('from_app', a.answer);
+                console.log(a.answer);
+                return a;
+            };
+            let a = fetchValue();
+            console.log(`result is ${a}`)
+
+            // emitter.emit('from_app', mypen.value);
+            // console.log(mypen.value);
         }
 
         return {

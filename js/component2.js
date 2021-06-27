@@ -1,4 +1,5 @@
 import { getEmitter } from './mitt.js'
+import { fetch_get } from './fetch.js'
 
 let emitter = getEmitter();
 
@@ -7,7 +8,7 @@ export default {
 
     setup() {
         const title = "Hello";
-        var mypen = Vue.ref("");
+        let mypen = Vue.ref("");
 
         // listen to an event
         emitter.on('from_app', e => {
@@ -16,8 +17,18 @@ export default {
         });
 
         function fire(str) {
-            emitter.emit('from_app1', mypen.value)
-            console.log(mypen.value);
+
+            let data = fetch_get('https://yesno.wtf/api');
+
+            (async () => {
+                const a = await data;
+                emitter.emit('from_app1', a.answer);
+                console.log(a.answer);
+                return a;
+            })();
+
+            // emitter.emit('from_app1', mypen.value)
+            // console.log(mypen.value);
         }
 
         return {
